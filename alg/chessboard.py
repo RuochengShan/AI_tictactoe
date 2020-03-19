@@ -1,6 +1,6 @@
 import numpy as np
 
-
+print(11)
 class ChessBoard(object):
 
     def __init__(self, size):
