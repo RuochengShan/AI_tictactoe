@@ -13,19 +13,6 @@ url = "/aip2pgaming/api/index.php?"
 team_id = "1194"
 
 
-def url_join(params):
-    """
-
-    :param params: request parameters as dict
-    :return: url as string
-    """
-    suffix = ""
-    for i in params:
-        suffix = suffix + i + "=" + params[i] + "&"
-    new_url = url + suffix
-    return new_url
-
-
 def get_games():
     """
 
