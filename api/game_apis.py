@@ -1,115 +1,160 @@
 print(1)
 
-#Create game:
+import http.client
 
-import requests
 
-url = "https://www.notexponential.com/aip2pgaming/api/index.php"
+def getMyGames():
+    conn = http.client.HTTPSConnection("www.notexponential.com")
+    payload = ''
+    headers = {
+        'x-api-key': '03e8aca7ba031db05137',
+        'userid': '890',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    conn.request("GET", "/aip2pgaming/api/index.php?type=myTeams", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
 
-payload = {'type': 'game',
-'teamId1': '1194',
-'teamId2': '1192',
-'gameType': 'TTT'}
-files = [
+def createGame():
+    conn = http.client.HTTPSConnection("www.notexponential.com")
+    dataList = []
+    boundary = 'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T'
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=type;')
 
-]
-headers = {
-  'x-api-key': '03e8aca7ba031db05137',
-  'userid': '890',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-response = requests.request("POST", url, headers=headers, data = payload, files = files)
+    dataList.append("game")
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=teamId1;')
 
-print(response.text.encode('utf8'))
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-#Get my teams:
+    dataList.append("1194")
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=teamId2;')
 
-import requests
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-url = "http://www.notexponential.com/aip2pgaming/api/index.php?type=myTeams"
+    dataList.append("1192")
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=gameType;')
 
-payload = {}
-headers = {
-  'x-api-key': '03e8aca7ba031db05137',
-  'userid': '890',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-response = requests.request("GET", url, headers=headers, data = payload)
+    dataList.append("TTT")
+    dataList.append('--' + boundary + '--')
+    dataList.append('')
+    body = '\r\n'.join(dataList)
+    payload = body
+    headers = {
+        'x-api-key': '03e8aca7ba031db05137',
+        'userid': '890',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
+    }
+    conn.request("POST", "/aip2pgaming/api/index.php", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
 
-print(response.text.encode('utf8'))
+def makeMove():
+    conn = http.client.HTTPSConnection("www.notexponential.com")
+    dataList = []
+    boundary = 'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T'
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=type;')
 
-#Get my games
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-import requests
+    dataList.append("move")
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=teamId;')
 
-url = "https://www.notexponential.com/aip2pgaming/api/index.php?type=myGames"
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-payload = {}
-headers = {
-  'x-api-key': '03e8aca7ba031db05137',
-  'userid': '890',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
+    dataList.append("1194")
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=gameId;')
 
-response = requests.request("GET", url, headers=headers, data = payload)
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-print(response.text.encode('utf8'))
+    dataList.append("17")
+    dataList.append('--' + boundary)
+    dataList.append('Content-Disposition: form-data; name=move;')
 
-#Make a move
-import requests
+    dataList.append('Content-Type: {}'.format('multipart/form-data'))
+    dataList.append('')
 
-url = "http://www.notexponential.com/aip2pgaming/api/index.php"
+    dataList.append("5,10")
+    dataList.append('--' + boundary + '--')
+    dataList.append('')
+    body = '\r\n'.join(dataList)
+    payload = body
+    headers = {
+        'x-api-key': '03e8aca7ba031db05137',
+        'userid': '890',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
+    }
+    conn.request("POST", "/aip2pgaming/api/index.php?type=move&teamId=1194&gameId=17&move=5,10", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
 
-payload = {'type': 'move',
-'teamId': '1194',
-'gameId': '16',
-'move': '5,9'}
-files = [
+def getMoves():
+    conn = http.client.HTTPSConnection("www.notexponential.com")
+    boundary = ''
+    payload = ''
+    headers = {
+        'x-api-key': '03e8aca7ba031db05137',
+        'userid': '890',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
+    }
+    conn.request("GET", "/aip2pgaming/api/index.php?type=moves&gameId=17&count=100", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
 
-]
-headers = {
-  'x-api-key': '03e8aca7ba031db05137',
-  'userid': '890',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
+def getBoardMap():
+    conn = http.client.HTTPSConnection("www.notexponential.com")
+    boundary = ''
+    payload = ''
+    headers = {
+        'x-api-key': '03e8aca7ba031db05137',
+        'userid': '890',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
+    }
+    conn.request("GET", "/aip2pgaming/api/index.php?type=boardMap&gameId=16", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
 
-response = requests.request("POST", url, headers=headers, data = payload, files = files)
-
-print(response.text.encode('utf8'))
-
-#Get board map
-import requests
-
-url = "http://www.notexponential.com/aip2pgaming/api/index.php?type=boardMap&gameId=16"
-
-payload = {}
-files = {}
-headers = {
-  'x-api-key': '03e8aca7ba031db05137',
-  'userid': '890',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
-
-response = requests.request("GET", url, headers=headers, data = payload, files = files)
-
-print(response.text.encode('utf8'))
-
-#Get moves
-import requests
-
-url = "http://www.notexponential.com/aip2pgaming/api/index.php?type=moves&gameId=16&count=10"
-
-payload = {}
-files = {}
-headers = {
-  'x-api-key': '03e8aca7ba031db05137',
-  'userid': '890',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
-
-response = requests.request("GET", url, headers=headers, data = payload, files = files)
-
-print(response.text.encode('utf8'))
-
+def getBoardString():
+    conn = http.client.HTTPSConnection("www.notexponential.com")
+    payload = ''
+    headers = {
+        'x-api-key': '03e8aca7ba031db05137',
+        'userid': '890',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    conn.request("GET", "/aip2pgaming/api/index.php?type=boardString&gameId=16", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
+if __name__ == '__main__':
+    getMyGames()
+    makeMove()
+    getMoves()
+    getBoardMap()
+    getBoardString()
