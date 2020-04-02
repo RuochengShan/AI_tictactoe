@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+from math import sqrt
 
 
 class ChessBoard(object):
@@ -22,14 +23,34 @@ class ChessBoard(object):
         """
         return self.board
 
+    def get_symbol(self, move_dic):
+        for i in move_dic:
+            team_id = i["teamId"]
+            symbol = i["symbol"]
+            if team_id == "1194":
+                if symbol == "O":
+                    player = 1
+                    return player
+                else:
+                    player = 2
+                    return player
+            else:
+                if symbol == "O":
+                    player = 1
+                    return player
+                else:
+                    player = 2
+                    return player
+
     def place_chess(self, x, y, player):
 
         self.board[x, y] = player
         self.lastChess = [x, y]
         self.lastPlayer = player
+        print(self.board)
 
     def import_from_moves(self, dic):
-        a = dic["moves"]
+        a = dic
         for i in a:
             x = int(i["moveX"])
             y = int(i["moveY"])
@@ -128,7 +149,7 @@ class ChessBoard(object):
 
     def get_neighbors(self, radius, coordinate):
         # coordinate <- [x, y]
-        board = self.get_board()
+        board = self.board
         row_col = 2 * radius + 1
         neighbor_list = []
         x = coordinate[0]
@@ -158,25 +179,53 @@ class ChessBoard(object):
         return non_zero_list
 
     def create_next_states(self, player):
-        board = self.get_board()
+        board = self.board
         new_states_list = []
         if np.all(board == 0):
+            # first move as O, place at center
             new_board = copy.copy(board)
             center = self.chessboard_size//2
             new_board[center, center] = player
-            new_states_list.append(new_board)
+            move = str(center)
+            move_code = move + "," + move
+            new_states_list.append([new_board, move_code])
+        elif np.count_nonzero(board == 1) == 1 and np.count_nonzero(board == 2) == 0:
+            # first move as X, place at O's neighbor where closest to center
+            new_board = copy.copy(board)
+            center = self.chessboard_size // 2
+            non_zero_coordinate = self.non_zero_coordinates()[0]
+            neighbor_list = self.get_neighbors(1, non_zero_coordinate)
+            x_2 = 0
+            y_2 = 0
+            min_dis = 100
+            for n in neighbor_list:
+                dis_x = (n[0] - center) * (n[0] - center)
+                dis_y = (n[1] - center) * (n[1] - center)
+                distance = sqrt(dis_x + dis_y)
+                if distance < min_dis:
+                    min_dis = distance
+                    x_2 = n[0]
+                    y_2 = n[1]
+            new_board[x_2, y_2] = player
+            move_code = str(x_2) + "," + str(y_2)
+            new_states_list.append([new_board, move_code])
 
         else:
             non_zero_list = self.non_zero_coordinates()
             available_list = []
             for i in non_zero_list:
-                neighbor_list = self.get_neighbors(3, i)
-                available_list += neighbor_list
+                neighbor_list = self.get_neighbors(1, i)
+                for neighbor in neighbor_list:
+                    if neighbor not in non_zero_list:
+                        available_list.append(neighbor)
 
             for coordinate in available_list:
                 new_board = copy.copy(board)
                 new_board[coordinate[0], coordinate[1]] = player
-                new_states_list.append(new_board)
+                move_x = str(coordinate[0])
+                move_y = str(coordinate[1])
+                move_code = move_x + "," + move_y
+                new_states_list.append([new_board, move_code])
 
         return new_states_list
 

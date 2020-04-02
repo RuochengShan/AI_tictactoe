@@ -1,4 +1,7 @@
 from api.apis import get_board_map, get_board_string, get_games, get_moves, make_move
+from alg.chessboard import ChessBoard
+from alg.minimax import mini_max_alg
+import time
 
 
 def main():
@@ -14,20 +17,20 @@ def main():
                     game_ids.append(g_id)
         # 2. get boards and moves
         for gid in game_ids:
+            result = False
             move = get_moves(gid)
-            board = get_board_map(gid)
-
-            # get next move function
-            # check if my turn by team id: O first
-            # next_move = get_next_move(board, move)
-
-            # 3. do the alg
-            next_move = "1,3"
-            if next_move:
+            chess_board = ChessBoard(12, 6)
+            if move:
+                chess_board.import_from_moves(move)
+                player = chess_board.get_symbol(move)
+                next_move = mini_max_alg(chess_board, player)
                 result = make_move(gid, next_move)
             else:
-                pass
-        pass
+                # try to move as first
+                next_move = mini_max_alg(chess_board, 1)
+                result = make_move(gid, next_move)
+
+        time.sleep(1)
 
 
 if __name__ == '__main__':
