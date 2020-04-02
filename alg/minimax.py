@@ -7,7 +7,7 @@ def alpha_beta_pruning(tier1_index, tier2_index, tier3_index, states, next_move_
     tier3_states_eva = {}
     # max for tier3
     for tier3_id in tier3_index:
-        tier3_states_eva[tier3_id] = 0
+        tier3_states_eva[tier3_id] = -100000
         for t3 in tier3_index[tier3_id]:
             score = evaluation_state(states[t3], current_player)
             if score >= tier3_states_eva[tier3_id]:
@@ -126,10 +126,14 @@ if __name__ == '__main__':
              "code":"OK"}
 
     c = ChessBoard(12, 6)
-    c.place_chess(7, 5, 0)
-    c.place_chess(7, 7, 2)
+    c.place_chess(5, 5, 1)
+    c.place_chess(6, 6, 2)
+    c.place_chess(5, 6, 1)
     #c.import_from_moves(dic)
     #c.import_from_moves(dic)
     current_player = 2
     next_move = mini_max_alg(c, current_player)
+    c.place_chess(7, 5, 2)
+    c.place_chess(5, 7, 1)
+    next_move1 = mini_max_alg(c, current_player)
     pass

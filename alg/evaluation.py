@@ -62,15 +62,15 @@ def evaluate_score(array, player):
 
     # 6
     count_6 = search_continues(player, 6, array, 100000)
-    count_6_opp = search_continues(switch_player1(player), 6, array, 1000)
+    count_6_opp = search_continues(switch_player1(player), 6, array, 100000)
     count_5 = search_continues(player, 5, array, 50000)
-    count_5_opp = search_continues(switch_player1(player), 5, array, 1000)
+    count_5_opp = search_continues(switch_player1(player), 5, array, 50000)
     count_4 = search_continues(player, 4, array, 1000)
     count_4_opp = search_continues(switch_player1(player), 4, array, 1000)
     count_3 = search_continues(player, 3, array, 200)
-    count_3_opp = search_continues(switch_player1(player), 3, array, 1000)
+    count_3_opp = search_continues(switch_player1(player), 3, array, 200)
     count_2 = search_continues(player, 2, array, 10)
-    count_2_opp = search_continues(switch_player1(player), 2, array, 1000)
+    count_2_opp = search_continues(switch_player1(player), 2, array, 10)
 
     score = count_6 + count_5 + count_4 + count_3 + count_2
     score_opp = count_6_opp + count_5_opp + count_4_opp + count_3_opp + count_2_opp
