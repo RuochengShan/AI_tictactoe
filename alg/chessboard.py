@@ -1,6 +1,6 @@
 import numpy as np
-import random
-from time import sleep
+import copy
+
 
 class ChessBoard(object):
 
@@ -28,7 +28,7 @@ class ChessBoard(object):
         self.lastChess = [x, y]
         self.lastPlayer = player
 
-    def get_moves(self, dic):
+    def import_from_moves(self, dic):
         a = dic["moves"]
         for i in a:
             x = int(i["moveX"])
@@ -40,30 +40,9 @@ class ChessBoard(object):
                 player = 2
             self.place_chess(x, y, player)
         return self.board
-    # def random_place(self, player):
-    #     l = []
-    #
-    #     for i in range(len(self.board)):
-    #         for j in range(len(self.board)):
-    #
-    #             if self.board[i][j] == 0:
-    #                 l.append([i, j])
-    #
-    #     current_loc = random.choice(l)
-    #     self.board[current_loc[0], current_loc[1]] = player
-    #     self.lastChess = [current_loc[0], current_loc[1]]
-    #     self.lastPlayer = player
 
-    # def get_point(self, x, y):
-    #     """
-    #     :param x: x-coordinate
-    #     :param y: y-coordinate
-    #     :return: a string indicator
-    #     """
-    #     if self.board[x, y] != 0:
-    #         return True
-    #     else:
-    #         return False
+    def import_from_board(self, board):
+        self.board = board
 
     def win(self):
         x_min = max(0, self.lastChess[0] - (self.target - 1))
@@ -147,39 +126,72 @@ class ChessBoard(object):
             winner = -1
         return winner
 
-    # def play_game(self):
-    #     winner = 0
-    #     counter = 1
-    #     print(self.board)
-    #     sleep(1)
-    #
-    #     while winner == 0:
-    #         for player in [1, 2]:
-    #             self.random_place(player)
-    #             print("Board after " + str(counter) + " move")
-    #             print(self.board)
-    #             sleep(1)
-    #             counter += 1
-    #             winner = self.evaluate_win()
-    #             if winner != 0:
-    #                 break
-    #     return winner
+    def get_neighbors(self, radius, coordinate):
+        # coordinate <- [x, y]
+        board = self.get_board()
+        row_col = 2 * radius + 1
+        neighbor_list = []
+        x = coordinate[0]
+        y = coordinate[1]
+        result = [([0] * row_col) for i in range(row_col)]
+        array_row = len(board)
+        array_col = len(board[0])
 
-    # def is_end(self):
-    #     """
-    #
-    #     :return: True if end, else False
-    #     """
-    #     pass
+        for i in range(result.__len__()):
+            for j in range(result.__len__()):
+                if (i + x - radius < 0 or j + y - radius < 0 or
+                        i + x - radius >= array_row or j + y - radius >= array_col):
+                    pass
+                else:
+                    neighbor_list.append([i + x - radius, j + y - radius])
+        while [x, y] in neighbor_list:
+            neighbor_list.remove([x, y])
 
-dic = {"moves":[{"moveId":"17","gameId":"16","teamId":"1194","move":"5,7","symbol":"O","moveX":"5","moveY":"7"},
-                  {"moveId":"15","gameId":"16","teamId":"1192","move":"3,3","symbol":"X","moveX":"3","moveY":"3"},
-                  {"moveId":"13","gameId":"16","teamId":"1194","move":"5,3","symbol":"O","moveX":"5","moveY":"3"},
-                  {"moveId":"11","gameId":"16","teamId":"1192","move":"3,2","symbol":"X","moveX":"3","moveY":"2"}],
-         "code":"OK"}
+        return neighbor_list
 
-c = ChessBoard(12,6)
-print(c.get_moves(dic))
+    def non_zero_coordinates(self):
+        board = self.board
+        non_zero_list = []
+        non_zero_pair = board.nonzero()
+        for i in range(len(non_zero_pair[0])):
+            non_zero_list.append([int(non_zero_pair[0][i]), int(non_zero_pair[1][i])])
+        return non_zero_list
+
+    def create_next_states(self, player):
+        board = self.get_board()
+        new_states_list = []
+        if np.all(board == 0):
+            new_board = copy.copy(board)
+            center = self.chessboard_size//2
+            new_board[center, center] = player
+            new_states_list.append(new_board)
+
+        else:
+            non_zero_list = self.non_zero_coordinates()
+            available_list = []
+            for i in non_zero_list:
+                neighbor_list = self.get_neighbors(3, i)
+                available_list += neighbor_list
+
+            for coordinate in available_list:
+                new_board = copy.copy(board)
+                new_board[coordinate[0], coordinate[1]] = player
+                new_states_list.append(new_board)
+
+        return new_states_list
+
+
+if __name__ == '__main__':
+
+    dic = {"moves":[{"moveId":"17","gameId":"16","teamId":"1194","move":"5,7","symbol":"O","moveX":"5","moveY":"7"},
+                      {"moveId":"15","gameId":"16","teamId":"1192","move":"3,3","symbol":"X","moveX":"3","moveY":"3"},
+                      {"moveId":"13","gameId":"16","teamId":"1194","move":"5,3","symbol":"O","moveX":"5","moveY":"3"},
+                      {"moveId":"11","gameId":"16","teamId":"1192","move":"3,2","symbol":"X","moveX":"3","moveY":"2"}],
+             "code":"OK"}
+
+    c = ChessBoard(5,5)
+    a = c.get_neighbors(2, [1,1])
+    print(c.import_from_moves(dic))
 
 
 

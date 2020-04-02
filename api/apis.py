@@ -43,7 +43,10 @@ def get_moves(game_id):
     response = conn.getresponse()
     data = json.loads(response.read())
     conn.close()
-    result = data["moves"]
+    if data["code"] == "OK":
+        result = data["moves"]
+    else:
+        result = []
     return result
 
 
@@ -79,7 +82,10 @@ def get_board_map(game_id):
     response = conn.getresponse()
     data = json.loads(response.read())
     conn.close()
-    result = json.loads(data["output"])
+    if data["output"]:
+        result = json.loads(data["output"])
+    else:
+        result = []
     return result
 
 
@@ -105,7 +111,7 @@ def make_move(game_id, move):
 
 if __name__ == '__main__':
     get_games()
-    get_moves("16")
+    a = get_moves("554")
     get_board_string("32")
     get_board_map("16")
     make_move("32", "5,5")
