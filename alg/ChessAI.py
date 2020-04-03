@@ -32,9 +32,9 @@ SFOUR, STHREE, STWO = CHESS_TYPE.CHONG_FOUR.value, CHESS_TYPE.SLEEP_THREE.value,
 
 SCORE_MAX = 1000000000
 SCORE_MIN = -1 * SCORE_MAX
-SCORE_SIX = 1000000
-SCORE_FIVE, SCORE_SFIVE = 100000, 50000
-SCORE_FOUR, SCORE_SFOUR = 10000, 1000
+SCORE_SIX = 100000000
+SCORE_FIVE, SCORE_SFIVE = 10000000, 5000000
+SCORE_FOUR, SCORE_SFOUR = 1000000, 9000000
 SCORE_THREE, SCORE_STHREE, SCORE_TWO, SCORE_STWO = 100, 10, 8, 2
 
 
@@ -287,23 +287,27 @@ class ChessAI():
         if opponent_count[SFOUR] >= 2:
             opponent_count[FOUR] += 1
 
-        if mine_count[FIVE] > 0:
-            return (10050, 0)
-        if mine_count[SFIVE] > 0:
-            return (10040, 0)
         if opponent_count[FIVE] > 0:
-            return (0, 10030)
+            return (0, 20030)
         if opponent_count[SFIVE] > 0 and opponent_count[FOUR] > 0:
-            return (0, 10020)
+            return (0, 20020)
+
+        if mine_count[FIVE] > 0:
+            return (20050, 0)
+        if mine_count[SFIVE] > 0:
+            return (20040, 0)
+
+
+        if opponent_count[FOUR] > 0:
+            return (0, 9030)
+        if opponent_count[SFOUR] > 0 and opponent_count[THREE] > 0:
+            return (0, 9020)
 
         if mine_count[FOUR] > 0:
             return (9050, 0)
         if mine_count[SFOUR] > 0:
             return (9040, 0)
-        if opponent_count[FOUR] > 0:
-            return (0, 9030)
-        if opponent_count[SFOUR] > 0 and opponent_count[THREE] > 0:
-            return (0, 9020)
+
         if mine_count[THREE] > 0 and opponent_count[SFOUR] == 0:
             return (9010, 0)
         if (opponent_count[THREE] > 1 and mine_count[THREE] == 0 and mine_count[STHREE] == 0):
