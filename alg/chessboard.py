@@ -3,6 +3,7 @@ import copy
 from math import sqrt
 import random
 
+
 class ChessBoard(object):
 
     def __init__(self, size, target):
@@ -44,12 +45,11 @@ class ChessBoard(object):
 
     def place_chess(self, x, y, player):
         if self.board[x, y] != 0:
-            print("fail")
+            print("occupied")
         else:
             self.board[x, y] = player
             self.lastChess = [x, y]
             self.lastPlayer = player
-
 
     def import_from_moves(self, dic):
         a = dic
@@ -244,16 +244,17 @@ class ChessBoard(object):
 
 
 if __name__ == '__main__':
+    from api.apis import get_moves
+    moves = get_moves("1144")
+    c = ChessBoard(12,6)
+    c.import_from_moves(moves)
+    board = c.board
+    from alg.ChessAI import ChessAI
+    agent = ChessAI(12)
+    x, y = agent.findBestChess(board, 2)
 
-    dic = {"moves":[{"moveId":"17","gameId":"16","teamId":"1194","move":"5,7","symbol":"O","moveX":"5","moveY":"7"},
-                      {"moveId":"15","gameId":"16","teamId":"1192","move":"3,3","symbol":"X","moveX":"3","moveY":"3"},
-                      {"moveId":"13","gameId":"16","teamId":"1194","move":"5,3","symbol":"O","moveX":"5","moveY":"3"},
-                      {"moveId":"11","gameId":"16","teamId":"1192","move":"3,2","symbol":"X","moveX":"3","moveY":"2"}],
-             "code":"OK"}
-
-    c = ChessBoard(5,5)
     a = c.get_neighbors(2, [1,1])
-    print(c.import_from_moves(dic))
+
 
 
 

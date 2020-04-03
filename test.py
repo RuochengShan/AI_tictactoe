@@ -4,7 +4,7 @@ from alg.chessboard import ChessBoard
 from alg.randomPlace import random_place
 from alg.minimax import mini_max_alg
 from alg.ChessAI import ChessAI
-# play with computer
+import copy
 import numpy as np
 
 
@@ -29,7 +29,7 @@ def player_first():
         duration = time2 - time1
         time_s = duration.total_seconds()
         chessboard.place_chess(y1, x1, 2)
-        print("computer place chess at", x1, ",", y1)
+        print("computer place chess at", y1, ",", x1)
         print("computer runtime for this move is: %s" % time_s, "seconds")
         print(chessboard.board)
         print("\n")
@@ -46,7 +46,7 @@ def player_first():
 
 def computer_first():
     chessboard = ChessBoard(12, 6)
-    chessAI = ChessAI(12)
+    chessAI = ChessAI1(12)
     while True:
         n = 0
         print("round %d: computer turn" % n)
@@ -55,11 +55,16 @@ def computer_first():
             x1 = int(computer_move.split(",")[0])
             y1 = int(computer_move.split(",")[1])
         else:
-            x1, y1 = chessAI.findBestChess(chessboard.board, 1)
+        # chessboard.place_chess(6,6,1)
+        # chessboard.place_chess(5,5,2)
+        # board_reverse = copy.copy(chessboard.board)
+        # board_reverse[board_reverse==1] = 2
+        # board_reverse[board_reverse==2] = 1
+            y1, x1 = chessAI.findBestChess(chessboard.board, 1)
 
         chessboard.place_chess(x1, y1, 1)
         print(chessboard.board)
-        print("computer place chess at", x1, ",", y1)
+        print("computer place chess at", y1, ",", x1)
         print("\n")
 
         print("round %d: player turn" % n)
@@ -83,5 +88,5 @@ def computer_first():
 
 
 if __name__ == '__main__':
-    player_first()
-    #computer_first()
+    #player_first()
+    computer_first()
