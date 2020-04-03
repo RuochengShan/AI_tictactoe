@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 from math import sqrt
-
+import random
 
 class ChessBoard(object):
 
@@ -43,11 +43,13 @@ class ChessBoard(object):
                     return player
 
     def place_chess(self, x, y, player):
+        if self.board[x, y] != 0:
+            print("fail")
+        else:
+            self.board[x, y] = player
+            self.lastChess = [x, y]
+            self.lastPlayer = player
 
-        self.board[x, y] = player
-        self.lastChess = [x, y]
-        self.lastPlayer = player
-        print(self.board)
 
     def import_from_moves(self, dic):
         a = dic
@@ -178,9 +180,12 @@ class ChessBoard(object):
             non_zero_list.append([int(non_zero_pair[0][i]), int(non_zero_pair[1][i])])
         return non_zero_list
 
-    def create_next_states(self, player):
+    def create_next_states(self, player, tier, count=0):
+
         board = self.board
         new_states_list = []
+        if count > 50000:
+            return new_states_list, 50000
         if np.all(board == 0):
             # first move as O, place at center
             new_board = copy.copy(board)
@@ -214,7 +219,10 @@ class ChessBoard(object):
             non_zero_list = self.non_zero_coordinates()
             available_list = []
             for i in non_zero_list:
-                neighbor_list = self.get_neighbors(1, i)
+                if tier == 1:
+                    neighbor_list = self.get_neighbors(2, i)
+                else:
+                    neighbor_list = self.get_neighbors(1, i)
                 for neighbor in neighbor_list:
                     if neighbor not in non_zero_list:
                         available_list.append(neighbor)
@@ -225,9 +233,14 @@ class ChessBoard(object):
                 move_x = str(coordinate[0])
                 move_y = str(coordinate[1])
                 move_code = move_x + "," + move_y
-                new_states_list.append([new_board, move_code])
 
-        return new_states_list
+                t_f_list = [True, False, True, True]
+                select = random.sample(t_f_list, 1)
+                if select:
+                    new_states_list.append([new_board, move_code])
+                count += 1
+
+        return new_states_list, count
 
 
 if __name__ == '__main__':

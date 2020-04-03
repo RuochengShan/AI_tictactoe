@@ -39,7 +39,7 @@ def search_continues(player, times, search_list, base_score):
     count = 0
     score = 0
     one_block = base_score*0.2
-    two_block = base_score*0.8
+    two_block = base_score
     while end <= len(search_list):
         check_list = search_list[start:end]
         block = check_block(search_list, player, start, end)
@@ -61,8 +61,8 @@ def evaluate_score(array, player):
     array = list(array)
 
     # 6
-    count_6 = search_continues(player, 6, array, 100000)
-    count_6_opp = search_continues(switch_player1(player), 6, array, 100000)
+    #count_6 = search_continues(player, 6, array, 100000)
+    #count_6_opp = search_continues(switch_player1(player), 6, array, 100000)
     count_5 = search_continues(player, 5, array, 50000)
     count_5_opp = search_continues(switch_player1(player), 5, array, 50000)
     count_4 = search_continues(player, 4, array, 1000)
@@ -72,8 +72,8 @@ def evaluate_score(array, player):
     count_2 = search_continues(player, 2, array, 10)
     count_2_opp = search_continues(switch_player1(player), 2, array, 10)
 
-    score = count_6 + count_5 + count_4 + count_3 + count_2
-    score_opp = count_6_opp + count_5_opp + count_4_opp + count_3_opp + count_2_opp
+    score = count_5 + count_4 + count_3 + count_2
+    score_opp = count_5_opp + count_4_opp + count_3_opp + count_2_opp
     score = score - score_opp*0.8
     return score
 
@@ -142,8 +142,10 @@ def evaluation_state(state, player):
 
             if len(a) > 1:
                 score += evaluate_score(a, player)
+                score += 100
             if len(b) > 1:
                 score += evaluate_score(b, player)
+                score += 100
 
     return score
 
