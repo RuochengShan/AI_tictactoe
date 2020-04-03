@@ -8,14 +8,13 @@ import time
 def main():
 
     while True:
-
         # 1. get games
         agent = ChessAI(12)
         games = get_games()
         game_ids = []
         for g in games:
             for g_id in g:
-                if "O" in g[g_id] and g_id != "1135":
+                if "O" in g[g_id] and g_id != "1135" and g_id != "32":
                     game_ids.append(g_id)
         # 2. get boards and moves
         for gid in game_ids:
