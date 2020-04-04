@@ -35,7 +35,7 @@ SCORE_MIN = -1 * SCORE_MAX
 SCORE_SIX = 1000000000
 SCORE_FIVE, SCORE_SFIVE = 100000000, 50000000
 SCORE_FOUR, SCORE_SFOUR = 10000000, 9000000
-SCORE_THREE, SCORE_STHREE, SCORE_TWO, SCORE_STWO = 10000, 10000, 2, 2
+SCORE_THREE, SCORE_STHREE, SCORE_TWO, SCORE_STWO = 11000, 10000, 2, 2
 
 
 class ChessAI():
@@ -360,28 +360,25 @@ class ChessAI():
 
     def evaluate(self, board, turn, checkWin=False):
         self.reset()
-
         if turn == MAP_ENTRY_TYPE.MAP_PLAYER_ONE:
             mine = 1
             opponent = 2
         else:
             mine = 2
             opponent = 1
-
         for y in range(self.len):
             for x in range(self.len):
                 if board[y][x] == mine:
                     self.evaluatePoint(board, x, y, mine, opponent)
                 elif board[y][x] == opponent:
                     self.evaluatePoint(board, x, y, opponent, mine)
-
         mine_count = self.count[mine - 1]
         opponent_count = self.count[opponent - 1]
         if checkWin:
             return mine_count[SIX] > 0
         else:
             mscore, oscore = self.getScore(mine_count, opponent_count)
-            return (mscore - oscore)
+            return mscore - oscore
 
     def evaluatePoint(self, board, x, y, mine, opponent, count=None):
         dir_offset = [(1, 0), (0, 1), (1, 1), (1, -1)]  # direction from left to right

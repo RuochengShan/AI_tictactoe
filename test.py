@@ -11,9 +11,9 @@ import numpy as np
 def player_first():
     chessboard = ChessBoard(12, 6)
     chessAI = ChessAI(12)
+    n = 1
     while True:
-        n = 0
-        print("round %d: player turn" % n)
+        print("round %s: player turn" % str(n))
         xy = input("input x y:")
         x = int(xy.split(" ")[0])
         y = int(xy.split(" ")[1])
@@ -88,5 +88,5 @@ def computer_first():
 
 
 if __name__ == '__main__':
-    #player_first()
-    computer_first()
+    player_first()
+    #computer_first()
